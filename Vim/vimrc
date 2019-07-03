@@ -1,0 +1,27 @@
+" Start key for custom key binds.
+let mapleader=" "
+
+" BASICS
+set nocompatible
+syntax enable
+filetype plugin on
+set number
+set relativenumber
+
+" Vim recursivley searches.
+set path+=**
+
+" Show <TAB> completion options.
+set wildmode=longest,list,full
+set wildmenu
+
+" Delete trailing whitespace on write.
+autocmd BufWritePre * %s/\s\+$//e
+
+" Disable automatic commenting on newline.
+autocmd FileType * setlocal formatoptions-=c
+
+" Net Browser
+let g:netrw_banner=0
+let g:netrw_altv=1
+let g:netrw_liststyle=3
