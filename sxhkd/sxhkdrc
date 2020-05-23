@@ -1,75 +1,104 @@
 #
-# wm independent hotkeys
+# wm independent hotkeys.
 #
 
-# terminal emulator
+# terminal emulator.
 super + Return
 	st
 
-# program launcher
+# program launcher.
 super + @space
 	dmenu_run
 
-# make sxhkd reload its configuration files:
+# make sxhkd reload its configuration files.
 super + Escape
-	pkill -USR1 -x sxhkd; \
-	notify-send "sxhkd restarted"
+	pkill -USR1 -x sxhkd
 
-# reboot / poweroff
+# Take a screenshot.
+Print
+    scrot ${HOME}/files/img/screenshots/screenshot$(date +%s).png
+
+# Promp poweroff or reboot.
 super + shift + Delete
-	~/.scripts/shtdwn
+    shtdwn
 
-{_, ctrl +} Print
-	name="$(date +%s).png"; \
-	file="~/var/screenshots/$name"; \
-	maim {_,-s} $file; \
-	xclip -selection clipboard -t image/png; < $file; \
-	notify-send "Screenshot Taken" "Screenshot $name saved to clipboard"
-
-# dwm
-super + {k,j}
-	dwmc focusstack {-,+}1
-
-super + {_, shift} + {comma, period}
-    dwmc {focusmon, tagmon} {-,+}1
-
-super + {h,l}
-	dwmc setmfact {-,+}0.05
-
+# Launch programs
 super + b
-	dwmc togglebar
+    ${BROWSER}
 
-super + shift + p
-	dwmc togglefloating
+super + z
+    zathura
 
-super + w
-	dwmc killclient
+super + e
+    st -e ${EDITOR}
 
-super + shift + q
-	dwmc quit
+#
+# bspwm hotkeys.
+#
 
-super + {t,f,m}
-	dwmc setlayoutex {0,1,2}
+# quit/restart bspwm.
+super + alt + {q,r}
+	bspc {quit,wm -r}
 
-super + {_,ctrl +}{_,shift +} {1-9}
-	dwmc {_,toggle}{viewex,tagex} {0-8}
+# close and kill.
+super + {_,shift + }w
+	bspc node -{k,c}
 
-super + 0
-	dwmc viewall
+# alternate between the tiled and monocle layout.
+super + m
+	bspc desktop -l next
 
-super + {minus,plus}
-	dwmc setgaps {-,+}5
+# alternate between the tiled and (fullscreen or floating) layout.
+super + {_,shift + }f
+    bspc node -t ~{fullscreen;bspwm_hidden 1,floating}
 
-super + {_, shift} + g
-    dwmc setgaps {10, 0}
+# focus the node in the given direction.
+super + {_,shift + }{h,j,k,l}
+	bspc node -{f,s} {west,south,north,east} --follow
 
-super + shift + r
-    xrdb -merge ${HOME}/.Xresources
-    dwmc xrdb
+# focus the previous node.
+super + comma
+    bspc node -f prev.local
 
-super + button2
-    dwmc resizemouse
+# focus the previous monitor.
+super + {_,shift + }period
+    bspc {monitor -f prev,node -m last --follow}
 
-#TODO
-# super + tab
-#   dwmc viewprev
+# cycle desktops.
+super + {_,shift + }Tab
+	bspc desktop -f {next,prev}
+
+# focus or send to the given desktop.
+super + {_,shift + }{1-5}
+	bspc {desktop -f ,node -d} 'focused:^{1-5}'
+
+# Bring up desktop on onfocused monitor, or move node.
+super + {_,shift + }{6-9,0}
+	bspc {desktop -a ,node -d} 'last:^{1-5}'
+
+# Toggle scratchpad.
+super + s
+    id=$(cat /tmp/scratchid);\
+    bspc node $id -g hidden;\
+    bspc node $id -m focused;\
+    bspc node -f $id
+
+# Toggle window visability (disregard the focused node with <shift>).
+super + {_,shift + }t
+    bspwm_hidden {_,1}
+
+# expand a window by moving one of its side outward.
+super + {u,i,o,p}
+	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
+
+# contract a window by moving one of its side inward.
+super + shift + {u,i,o,p}
+	bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
+
+# move a floating window.
+super + alt + {h,j,k,l}
+	bspc node -v {-20 0,0 20,0 -20,20 0}
+
+# Gaps.
+super + {_,ctrl + ,alt + ,shift + }g
+    bspwm_gaps {gapon, dec, inc, gapoff}
