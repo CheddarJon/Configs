@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Fix for monitors sometimes changing names on reboot.
+i=0
+for m in $(xrandr -q | grep " connected" | cut -d" " -f1); do
+	export MON${i}=$m
+	i=$((i+1))
+done
+
+#xrandr --output ${MON0} --auto --output ${MON1} --auto --rotate right --left-of ${MON0}
+xrandr --output ${MON0} --auto --output ${MON1} --auto --left-of ${MON0}

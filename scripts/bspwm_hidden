@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# Toggle visability of nodes on current desktop.
+# Not including scratchpad (and focused node if an argument is provided).
+
+nodes=$(bspc query -N -n .local.window)
+skip=$(cat /tmp/scratchid)
+focused=null
+
+if [ -n "$1" ]; then
+    focused=$(bspc query -N -n focused)
+fi
+
+for node in $nodes; do
+    if [ $node != $skip ] && [ $node != $focused ]; then
+        bspc node $node -g hidden
+    fi
+done

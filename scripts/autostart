@@ -1,0 +1,9 @@
+#!/bin/sh
+
+sxhkd &
+feh --randomize --bg-fill --no-fehbg ${HOME}/utils/wallpapers/Landscapes &
+unclutter &
+dunst -conf ${HOME}/.config/dunst/dunstrc &
+compton -bCG
+xsetroot -cursor_name left_ptr
+polybar.sh &

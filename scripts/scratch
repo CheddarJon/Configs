@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Start a new scratchpad if no other is active.
+if [ 1 -eq $(ps aux | grep -c scratchpad) ]; then
+    st -c scratchpad &
+    sleep .1
+    bspc query -N -n .sticky.floating.hidden > /tmp/scratchid
+fi
